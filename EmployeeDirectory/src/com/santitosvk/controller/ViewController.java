@@ -1,11 +1,12 @@
 package com.santitosvk.controller;
 
-import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.TransactionSystemException;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,46 +70,41 @@ public class ViewController {
 	}
 
 	@RequestMapping(value = "/addEmployee", method = RequestMethod.POST)
-	public ModelAndView add(@ModelAttribute Employee employee,
-			final RedirectAttributes redirectAttributes)
-			throws ConstraintViolationException {
-		try {
-			employeeSvc.createEmployee(employee);
-		} catch (ConstraintViolationException exp) {
-			ModelAndView mav = new ModelAndView("redirect:/add");
-			redirectAttributes.addFlashAttribute("error", "Invalid email");
-			return mav;
-		}
-		ModelAndView mav = new ModelAndView("redirect:/search");
-		String message = "Employee was successfully added.";
-		redirectAttributes.addFlashAttribute("message", message);
-		return mav;
+	public String add(@Valid Employee employee,
+			BindingResult result, Model m) {
+		if(result.hasErrors()) {
+            return "/add";
+        }
+		employeeSvc.createEmployee(employee); 
+        m.addAttribute("message", "Employee was successfully added.");
+        return "/search";
+		
+		
 	}
 
 	@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-	public ModelAndView editEmployee(@PathVariable Integer id) {
+	public ModelAndView editEmployee(@PathVariable Integer id, Model m) {
 		ModelAndView mav = new ModelAndView("edit");
-		Employee employee = employeeSvc.findById(id);
-		mav.addObject("employee", employee);
+		if (!m.containsAttribute("employee")) {
+			Employee employee = employeeSvc.findById(id);
+			mav.addObject("employee", employee);
+	    }
 		return mav;
 	}
 
 	@RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
-	public ModelAndView editEmployee(@ModelAttribute Employee employee,
-			@PathVariable Integer id,
-			final RedirectAttributes redirectAttributes)
-			throws TransactionSystemException {
-		try {
-			employeeSvc.update(employee);
-		} catch (TransactionSystemException exp) {
-			ModelAndView mav = new ModelAndView("redirect:/edit/" + id);
-			redirectAttributes.addFlashAttribute("error", "Invalid email");
-			return mav;
-		}
-		ModelAndView mav = new ModelAndView("redirect:/search");
-		String message = "Employee was successfully updated.";
-		redirectAttributes.addFlashAttribute("message", message);
-		return mav;
+	public String editEmployee(@Valid Employee employee,// REMEMBER THAT BINDINGRESULT SHOULD ALWAYS FOLLOW @VALID OR YOU WILL HAVE A BAD TIME (ノ ゜Д゜)ノ ︵ ┻━┻
+			BindingResult result, @PathVariable Integer id,
+			final RedirectAttributes redirectAttributes,
+			Model m) {
+		if(result.hasErrors()) {
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.employee", result);
+			redirectAttributes.addFlashAttribute("employee", employee);
+			return "redirect:/edit/" + id;
+        }
+		employeeSvc.update(employee);
+		m.addAttribute("message", "Employee was successfully update.");
+        return "/search";
 	}
 
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)

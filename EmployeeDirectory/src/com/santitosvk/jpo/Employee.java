@@ -2,9 +2,14 @@ package com.santitosvk.jpo;
 
 import java.io.Serializable;
 
-import javax.persistence.*;
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 
 
 
@@ -21,14 +26,16 @@ public class Employee implements Serializable {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 
-	@Email
+	@NotBlank @Email
 	private String email;
 
-	@Column(name="JOB_TITLE")
+	@NotBlank @Column(name="JOB_TITLE")
 	private String jobTitle;
 
+	@NotBlank
 	private String name;
 
+	@NotBlank
 	private String phoneNumber;
 	
 	public String getCellphoneNumber() {
@@ -39,6 +46,7 @@ public class Employee implements Serializable {
 		this.cellphoneNumber = cellphoneNumber;
 	}
 
+	@NotBlank
 	private String cellphoneNumber;
 
 	public Employee() {

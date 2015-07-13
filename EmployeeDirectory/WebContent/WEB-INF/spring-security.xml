@@ -7,7 +7,7 @@
 	http://www.springframework.org/schema/security/spring-security-4.0.xsd">
  
     
-	<http disable-url-rewriting="false">
+	<http disable-url-rewriting="true">
 		<headers disabled="true"/>
 		<csrf disabled="true"/>
  		
@@ -35,9 +35,12 @@
 	  <authentication-provider>
 		<jdbc-user-service data-source-ref="dataSource"
 		  users-by-username-query=
-		    "select username,password, enabled from user_account where username=?"
+		    "select username,password, enabled from users where username=?"
 		  authorities-by-username-query=
-		    "select username, role from user_roles where username =?  " />
+		    "select u.username, ga.authority from users u, group_members gm, group_authorities ga
+		    where u.username = gm.username
+		    and gm.group_id = ga.group_id
+		    and u.username =?  " />
 	  </authentication-provider>
 	</authentication-manager>
  

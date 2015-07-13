@@ -4,7 +4,7 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -68,9 +68,8 @@ table {
 					<td>${e.phoneNumber}</td>
 					<td>${e.cellphoneNumber}</td>
 					<sec:authorize access="hasRole('ROLE_ADMIN')">
-						<td><a
-							href="${pageContext.request.contextPath}/edit/${e.id}">Edit</a>/<a
-							href="${pageContext.request.contextPath}/delete/${e.id}">Delete</a></td>
+						<td><a href="${pageContext.request.contextPath}/edit/${e.id}">Edit</a>/
+							<a id="delete${e.id}" onClick="myFunction(${e.id})" href="${pageContext.request.contextPath}/delete/${e.id}">Delete</a></td>
 					</sec:authorize>
 
 				</tr>
@@ -86,5 +85,17 @@ table {
 	<b> <a href="${url}">Logout</a>
 	</b>
 </div>
+<script>
+function myFunction(id) {
+    var a = document.getElementById("delete" + id);
+    if (confirm("Press a button! " + id) == true) {
+    	a.setAttribute("href", "${pageContext.request.contextPath}/delete/" + id);
+    } else {
+    	a.setAttribute("href", "#");
+    }
+    
+}
+</script>
+
 </body>
 </html>

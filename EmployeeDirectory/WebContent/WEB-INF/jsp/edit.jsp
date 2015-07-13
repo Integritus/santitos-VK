@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="sec"	uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -29,7 +30,7 @@
 			<tr>
 				<td>Employee Name:</td>
 				<td><form:input path="name" /></td>
-				<td></td>
+				<td><form:errors path="name"></form:errors></td>
 			</tr>
 			<tr>
 				<td>Employee Job Title:</td>
@@ -47,7 +48,7 @@
 				<td></td>
 			</tr>
 			<tr>
-				<td>Employee CellPhone Number::</td>
+				<td>Employee CellPhone Number:</td>
 				<td><form:input path="cellphoneNumber" /></td>
 				<td></td>
 			</tr>
